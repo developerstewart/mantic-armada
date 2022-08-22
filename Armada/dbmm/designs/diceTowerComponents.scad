@@ -18,7 +18,15 @@ module genShape(shapeWidth,ShapeOutline,ShapePoints) {
 
 module towerFront(towerWidth, towerHeight, wallThickness,diceOpening) {
 
-    translate([0,0,diceOpening])cube([towerWidth, towerHeight-diceOpening, wallThickness]) ;
+    translate([0,diceOpening,0])cube([wallThickness,towerHeight-diceOpening, towerWidth]) ;
+ 
+}
+
+
+
+module towerBack(towerWidth, towerHeight, wallThickness, towerDepth) {
+
+    translate([towerDepth-wallThickness,0,wallThickness])cube([wallThickness,towerHeight, towerWidth]) ;
  
 }
 
@@ -83,8 +91,10 @@ module exitRamp(shapeWidth,ShapeOutline) {
 
 //translate([30,0,0])cornerClip(shapeWidth=6) ;
 
-//exitRamp(shapeWidth=towerWidth-0*wallThickness, ShapeOutline=exitRampPoly) ;
+exitRamp(shapeWidth=towerWidth-0*wallThickness, ShapeOutline=exitRampPoly) ;
 towerSideLeft(towerDepth,towerHeight, wallThickness) ;
-//towerBase(towerDepth,towerWidth, wallThickness) ;
+towerBase(towerDepth,towerWidth, wallThickness) ;
 
 towerFront(towerWidth, towerHeight, wallThickness,diceOpening) ;
+
+towerBack(towerWidth, towerHeight, wallThickness, towerDepth) ;
