@@ -4,10 +4,10 @@ barker =    miniSize==15 ? 40: 60 ; //mm  per 80 paces
 rulerLength=400 ; // paces
 measureLength = barker*rulerLength/80 ;  //mm
 
-label1="Bge, Bd, Bw, Hd, Pk, Sp, Nav(X), WWg, Wb, Art(I, O or X), Sh" ;
-label2="Ax, EL, Kn, Ps" ;
-label3="Cv, Cm, Ex" ;
-label4="LH, Nav(I, O or S)" ;
+label1="Bge, Bd, Bw, Hd, Pk, Sp, Nav(X), WWg, Wb, Art(I O X), Sh" ;
+label2="Ax, El, Kn, Ps" ;
+label3="Cv, Cm, Exp" ;
+label4="LH, Nav(I O S)" ;
 
 label5="March Move" ;
 label6="Exclusion" ;
@@ -68,23 +68,24 @@ for (thisLine = [1:1:10]) {
     }
 }
 
-translate([2, 32*barker/40,2.0]) color("green")linear_extrude(height=1.4)text(label1, font="Liberation Sans:style=Bold", size=3, spacing=1.1) ;
-translate([0,30*barker/40,0]) color("red")cube([2*barker-2.5,1,3.4]) ;
-translate([2*barker-2, 30.4*barker/40 ,0]) color("red")cylinder(h=3.4,r=1.5, $fn=3) ; //arrowhead
+translate([2, 32*barker/40,2.0]) color("white")linear_extrude(height=1.4)text(label1, font="Liberation Sans:style=Bold", size=3, spacing=1.1) ;
+translate([0,30*barker/40,0]) color("white")cube([2*barker-2.5,1,3.4]) ;
+translate([2*barker-2, 30.4*barker/40 ,0]) color("white")cylinder(h=3.4,r=1.5, $fn=3) ; //arrowhead
+translate([2.5*barker-2, 30.4*barker/40 ,0]) color("white")cylinder(h=3.4,r=1.5, $fn=3) ; //arrowhead
 
 translate([2, 26*barker/40,2.0]) color("green")linear_extrude(height=1.4)text(label2, font="Liberation Sans:style=Bold", size=3, spacing=1.1) ;
-translate([0,24*barker/40,0]) color("red")cube([2.5*barker-2.5,1,3.4]) ;
-translate([2.5*barker-2, 24.4*barker/40 ,0]) color("red")cylinder(h=3.4,r=1.5, $fn=3) ; //arrowhead
+translate([0,24*barker/40,0]) color("green")cube([2.5*barker-2.5,1,3.4]) ;
+translate([2.5*barker-2, 24.4*barker/40 ,0]) color("green")cylinder(h=3.4,r=1.5, $fn=3) ; //arrowhead
 
-translate([2, 20*barker/40,2.0]) color("green")linear_extrude(height=1.4)text(label3, font="Liberation Sans:style=Bold", size=3, spacing=1.1) ;
-translate([0,18*barker/40,0]) color("red")cube([3.0*barker-2.5,1,3.4]) ;
-translate([3.0*barker-2, 18.4*barker/40 ,0]) color("red")cylinder(h=3.4,r=1.5, $fn=3) ; //arrowhead
+translate([2, 20*barker/40,2.0]) color("orange")linear_extrude(height=1.4)text(label3, font="Liberation Sans:style=Bold", size=3, spacing=1.1) ;
+translate([0,18*barker/40,0]) color("orange")cube([3.0*barker-2.5,1,3.4]) ;
+translate([3.0*barker-2, 18.4*barker/40 ,0]) color("orange")cylinder(h=3.4,r=1.5, $fn=3) ; //arrowhead
 
 
-translate([2, 14*barker/40,2.0]) color("green")
+translate([2, 14*barker/40,2.0]) color("yellow")
     linear_extrude(height=1.4)text(label4, font="Liberation Sans:style=Bold", size=3, spacing=1.1) ;
-translate([0,12*barker/40,0]) color("red")cube([4.0*barker-2.5,1,3.4]) ;
-translate([4.0*barker-2, 12.4*barker/40 ,0]) color("red")cylinder(h=3.4,r=1.5, $fn=3) ; //arrowhead
+translate([0,12*barker/40,0]) color("yellow")cube([4.0*barker-2.5,1,3.4]) ;
+translate([4.0*barker-2, 12.4*barker/40 ,0]) color("yellow")cylinder(h=3.4,r=1.5, $fn=3) ; //arrowhead
 
 translate([measureLength-6, 10*barker/40,0]) color("green")rotate([0,0,90]) 
     linear_extrude(height=3.4)text(label5, font="Liberation Sans:style=Bold", size=3, spacing=1.1) ;
