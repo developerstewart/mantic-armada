@@ -8,10 +8,13 @@ baffleDepth     = towerDepth/2.00 ; // = 35.00 ; //mm;
 baffle1BelowTop = 5 ;
 diceOpening = 26 ; // mm
 
-printOption = "C" ; // S=Sides, F=Front and Back, B=Baffles, C=clips/Base, T=Tray
+printOption = "C" ; // S=Sides, F=Front and Back, B=Baffles, C=Clips, T=Tray, Q=Base
 
 baffle1poly = [ [0, 0],[baffleDepth, 0],[baffleDepth, 2*baffleThickness],
                 [baffleDepth-2*baffleThickness,baffleThickness],[0, baffleThickness]] ;
+
+baseClippoly = [ [0, 0],[baffleDepth, 0],[baffleDepth, wallThickness],
+                 [0, wallThickness]] ;
 
 module genShape(shapeWidth,ShapeOutline) {
         linear_extrude(shapeWidth) polygon(points=ShapeOutline ) ;
@@ -54,15 +57,31 @@ module towerSideRight(towerDepth, towerHeight, wallThickness) {
 
 module towerBase(towerDepth,towerWidth, wallThickness){
     cornerSize=4.00 ; //mm
-    cube([towerDepth+2*wallThickness, towerWidth+2*wallThickness, wallThickness]) ;
+    cube([towerDepth+4*wallThickness, towerWidth+2*wallThickness, wallThickness]) ;
     translate([0,towerWidth-cornerSize-wallThickness,0])
         color("darkgrey") cornerClip(shapeWidth=cornerSize) ;
-    translate([towerDepth-cornerSize-wallThickness,towerWidth+cornerSize,0]) rotate([0,0,-90])
+    translate([towerDepth-cornerSize+wallThickness,towerWidth+cornerSize,0]) rotate([0,0,-90])
         color("blue") cornerClip(shapeWidth=cornerSize) ;
     translate([cornerSize+3*wallThickness,0,0]) rotate([0,0,90])
         color("pink") cornerClip(shapeWidth=cornerSize) ;
-    translate([towerDepth+2*wallThickness, cornerSize+3*wallThickness,0]) rotate([0,0,-180])
+    translate([towerDepth+4*wallThickness, cornerSize+3*wallThickness,0]) rotate([0,0,-180])
         color("yellow") cornerClip(shapeWidth=cornerSize) ;
+    translate([(towerDepth+3*wallThickness-baffleDepth)/2,0.0*wallThickness,0]) 
+        genShape(shapeWidth=4,ShapeOutline=baseClippoly) ;
+    translate([(towerDepth+3*wallThickness-baffleDepth)/2,2.1*wallThickness,0]) 
+        genShape(shapeWidth=4,ShapeOutline=baseClippoly) ;
+    
+    translate([(towerDepth+3*wallThickness-baffleDepth)/2,towerWidth+1.0*wallThickness,0]) 
+        genShape(shapeWidth=4,ShapeOutline=baseClippoly) ;
+    translate([(towerDepth+3*wallThickness-baffleDepth)/2,towerWidth-1.1*wallThickness,0]) 
+        genShape(shapeWidth=4,ShapeOutline=baseClippoly) ;        
+
+    translate([towerDepth-3.1*wallThickness+10, (towerDepth+3*wallThickness-baffleDepth)/2,0]) 
+       rotate([0,0,90]) 
+       color("cyan")genShape(shapeWidth=4,ShapeOutline=baseClippoly) ;
+    translate([towerWidth-1*wallThickness+10,(towerDepth+3*wallThickness-baffleDepth)/2,0]) 
+        rotate([0,0,90]) 
+        color("blue")genShape(shapeWidth=4,ShapeOutline=baseClippoly) ;        
 }
 
 module cornerClip(shapeWidth) {
@@ -123,10 +142,13 @@ else if (printOption == "B") {
     translate([towerWidth,2*baffleDepth+4,0]) color("grey") baffle(baffleWidth=towerWidth,baffleOutline=baffle1poly) ;
 }
 else if (printOption == "C") {
+    translate([towerDepth+4*wallThickness+2,0,0]) cornerClip(shapeWidth=6) ;
+    translate([towerDepth+4*wallThickness+2,15,0]) cornerClip(shapeWidth=6) ;
+    translate([towerDepth+4*wallThickness+2,30,0]) cornerClip(shapeWidth=6) ;
+    translate([towerDepth+4*wallThickness+2,45,0]) cornerClip(shapeWidth=6) ;
+    
+}
+else if (printOption=="Q") {
     towerBase(towerDepth,towerWidth, wallThickness) ;
-    translate([towerDepth+2*wallThickness+2,0,0]) cornerClip(shapeWidth=6) ;
-    translate([towerDepth+2*wallThickness+2,15,0]) cornerClip(shapeWidth=6) ;
-    translate([towerDepth+2*wallThickness+2,30,0]) cornerClip(shapeWidth=6) ;
-    translate([towerDepth+2*wallThickness+2,45,0]) cornerClip(shapeWidth=6) ;
     
 }
