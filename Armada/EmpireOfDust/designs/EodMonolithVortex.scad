@@ -8,11 +8,11 @@ difference() {
     union() {
     cylinder(h=3, r=12, $fn=3) ;
     }
-    translate([-2,-15,-1.1]) cube([1,25,5.2]) ;
-    translate([2,-15  ,-1.1]) 
-    cube([1,25,5.2]) ;
-    translate([6,-15  ,-1.1]) 
-    cube([1,25,5.2]) ;
+    translate([-2.5,-15,-1.1]) #cube([0.5,25,5.2]) ;
+    translate([ 0.5,-15  ,-1.1]) #cube([0.5,25,5.2]) ;
+    translate([ 3.5,-15  ,-1.1])  #cube([0.5,25,5.2]) ;
+    translate([ 6.5,-15  ,-1.1]) #cube([0.5,25,5.2]) ;
+    //translate([ 6,-15  ,-1.1])  #cube([0.5,25,5.2]) ;
     translate([0,0,-2]) cylinder(h=6, r=9, $fn=3) ;
 }
 
