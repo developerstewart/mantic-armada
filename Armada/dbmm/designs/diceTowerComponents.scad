@@ -34,7 +34,7 @@ diceOpening = 26 ; // mm
 // T = Tray ; (print one)
 // Q = Base (print one)
 
-printOption = "Q" ; 
+printOption = "TB" ; 
 
 baffle1poly = [ [0, 0],[baffleDepth, 0],[baffleDepth, 2*baffleThickness],
                 [baffleDepth-2*baffleThickness,baffleThickness],[0, baffleThickness]] ;
@@ -55,15 +55,15 @@ module brick(brickWidth, brickHeight, brickDepth) {
 module towerFront(towerWidth, towerHeight, wallThickness,diceOpening) {
 
 difference() {
-    cube([towerWidth+2*wallThickness,towerHeight, wallThickness]) ;
-    translate([5+wallThickness,-.01,-.01])cube([towerWidth-2*5, diceOpening+.02, wallThickness+.02]) ;
+    cube([towerWidth,towerHeight, wallThickness]) ;
+    translate([5,-.01,-.01])cube([towerWidth-2*5, diceOpening+.02, wallThickness+.02]) ;
 
     } 
 }
 
 module towerBack(towerWidth, towerHeight, wallThickness, towerDepth) {
 
-    cube([towerWidth+2*wallThickness,towerHeight, wallThickness]) ;
+    cube([towerWidth,towerHeight, wallThickness]) ;
  
 }
 
