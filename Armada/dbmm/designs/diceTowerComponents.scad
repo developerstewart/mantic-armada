@@ -7,7 +7,9 @@ Created by Stewart Stevens, August 2022
 
 This file contains all the code required to generate the 11 components that make up the tower
 
-Yet Another Dice Tower © 2022 by Stewart Stevens is licensed under Attribution-NonCommercial-ShareAlike 4.0 International. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0/
+Yet Another Dice Tower © 2022 by Stewart Stevens is licensed under Attribution-NonCommercial-ShareAlike 4.0 International. 
+
+To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0/
 
 */
 
@@ -32,7 +34,7 @@ diceOpening = 26 ; // mm
 // T = Tray ; (print one)
 // Q = Base (print one)
 
-printOption = "TF" ; 
+printOption = "Q" ; 
 
 baffle1poly = [ [0, 0],[baffleDepth, 0],[baffleDepth, 2*baffleThickness],
                 [baffleDepth-2*baffleThickness,baffleThickness],[0, baffleThickness]] ;
@@ -284,11 +286,11 @@ else if (printOption == "E") {
  }
  else if (printOption == "C") {
     
-    towerBase(towerDepth,towerWidth, wallThickness, "B") ; // B=Base for tower;  
+    towerBase(towerDepth,towerWidth, wallThickness, "C") ; // B=Base for tower;  
     
 }
 else if (printOption=="Q") {
-    towerBase(towerDepth,towerWidth, wallThickness, "C") ;
+    towerBase(towerDepth,towerWidth, wallThickness, "B") ;
     
 }
 else if (printOption == "T") {
