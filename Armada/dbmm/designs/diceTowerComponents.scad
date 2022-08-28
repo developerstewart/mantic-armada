@@ -1,3 +1,16 @@
+//
+/*
+
+Yet Another Dice Tower
+**********************
+Created by Stewart Stevens, August 2022
+
+This file contains all the code required to generate the 11 components that make up the tower
+
+Yet Another Dice Tower © 2022 by Stewart Stevens is licensed under Attribution-NonCommercial-ShareAlike 4.0 International. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0/
+
+*/
+
 clipHeightAboveWall = 4.00 ; // mm
 towerHeight=120 ; // mm
 towerDepth=70 ; // mm
@@ -11,7 +24,15 @@ baffleDepth     = towerDepth/2.00 ; // = 35.00 ; //mm;
 baffle1BelowTop = 5 ;
 diceOpening = 26 ; // mm
 
-printOption = "S" ; // S=Sides, F=Front and Back, B=Baffles, C=Clips, T=Tray, Q=Base
+// LS, RS= Left or Right Side;  (print one of each)
+// TF, TB = Tower Front or Back; (print one of each)
+// B = Baffle;  (Print 3 of these)
+// E = 'Exit' slope; (print one )
+// C = Coping/Tower top; (print one) 
+// T = Tray ; (print one)
+// Q = Base (print one)
+
+printOption = "TF" ; 
 
 baffle1poly = [ [0, 0],[baffleDepth, 0],[baffleDepth, 2*baffleThickness],
                 [baffleDepth-2*baffleThickness,baffleThickness],[0, baffleThickness]] ;
@@ -61,7 +82,7 @@ module towerSide(towerDepth, towerHeight, wallThickness) {
 
 }
 module towerSideLeft(towerDepth, towerHeight, wallThickness) {
-   //rotate([0,180,0])
+   
         union() {
             //side plate
             cube([towerDepth, towerHeight, wallThickness]) ;
@@ -87,7 +108,21 @@ rotate([0,180,0])
 
 module towerBase(towerDepth,towerWidth, wallThickness, type="B"){
     cornerSize=4.00 ; //mm
-    cube([towerDepth+4*wallThickness, towerWidth+2*wallThickness, wallThickness]) ;
+    if (type=="B") {
+        cube([towerDepth+4*wallThickness, towerWidth+2*wallThickness, wallThickness]) ;
+    }
+    else {
+        {
+            translate([0,0,-0.5*wallThickness])
+               cube([towerDepth+4*wallThickness, 3*wallThickness, wallThickness]) ;
+            translate([0,0,-0.5*wallThickness])
+               cube([3*wallThickness, towerWidth+2*wallThickness, wallThickness]) ;
+            translate([0,towerWidth-1*wallThickness,-0.5*wallThickness])
+               cube([towerDepth+4*wallThickness, 3*wallThickness, wallThickness]) ;
+            translate([towerDepth+1*wallThickness,0,-0.5*wallThickness])
+               cube([3*wallThickness, towerWidth+2*wallThickness, wallThickness]) ;
+        }
+    }
     //Add Corners
     translate([0,towerWidth-cornerSize-wallThickness,0])
         color("darkgrey") cornerClip(shapeWidth=cornerSize) ;
@@ -116,7 +151,7 @@ module towerBase(towerDepth,towerWidth, wallThickness, type="B"){
     translate([towerWidth-1*wallThickness+10,(towerDepth-12*wallThickness-baffleDepth)/2,0]) 
         rotate([0,0,90]) 
         color("blue")genShape(shapeWidth=cornerSize,ShapeOutline=baseClippoly) ;
-    if (type=="C") {
+    if (type=="C") {  // remove front opening
         translate([3.1*wallThickness, (towerDepth-13.5*wallThickness-baffleDepth)/2,0]) 
        rotate([0,0,90]) 
        color("cyan")genShape(shapeWidth=cornerSize,ShapeOutline=baseClippoly) ;
@@ -146,32 +181,10 @@ module cornerClip(shapeWidth) {
     }
 }
 
-module towerCoping(shapeWidth) {
-       //cornerClipPoints
-    x0=0 ; x1=wallThickness-0.05; x2=2*wallThickness+0.05 ; x3= 3* wallThickness; x4=towerWidth  ;
-    y0=0 ; y1=towerDepth-1*wallThickness ; y2=towerDepth-0*wallThickness-.05;
-    y3=towerDepth + wallThickness + .05; y4=towerDepth+2*wallThickness   ;
-    cornerClipPoints = [[x0,y0],[x1,y0],[x2,y0],[x3,y0],[x2,y2],[x4,y2],[x4,y1],[x3,y1],[x0,y4],[x4,y4],[x4,y3],[x1,y3]] ;
-    //                     0       1       2       3       4       5       6       7       8       9       10      11
-
-    shape1 = [[x2,y0],[x2,y2],[x4,y2],[x4,y1],[x3,y1],[x3,y0]];
-    shape2 = [[x0,y0],[x0,y4],[x4,y4],[x4,y3],[x1,y3],[x1,y0]] ;
-    shape3 = [[x0,y0],[x0,y4],[x4,y4],[x4,y1],[x3,y1],[x3,y0]] ;
-
-    union() {
-        color("red")genShape(shapeWidth=shapeWidth,ShapeOutline=shape1) ;
-        color("yellow")genShape(shapeWidth=shapeWidth,ShapeOutline=shape2) ;
-        color("cyan")genShape(shapeWidth=shapeWidth-clipHeightAboveWall,ShapeOutline=shape3) ;
-    }
-
-    //cornerClip(shapeWidth = towerWidth-2*wallThickness) ;
-    
-}
 
 module baffleClip(clipWidth, rotateAngle) {
-    //translate([-clipWidth/2, -3*baffleThickness/2, 0])
-    rotate([0,0,-rotateAngle])
-    
+    // Added to the sidd walls to 'hold the baffles'
+    rotate([0,0,-rotateAngle])   
     union() {translate([0,0,0])cube([clipWidth,3*baffleThickness,wallThickness]) ;
     translate([0,0,0])color("red")cube([baffleThickness,baffleThickness,wallThickness+clipHeightAboveWall]) ;
     translate([0,0,0])cube([clipWidth,baffleThickness,wallThickness+clipHeightAboveWall ]) ;
@@ -180,18 +193,19 @@ module baffleClip(clipWidth, rotateAngle) {
 }
 
 module towerTray(towerHeight, towerWidth, towerDepth) {
-    
+    xgap = 5;
     //floor
-    color("white")cube([towerHeight, towerWidth+2*wallThickness, wallThickness]) ;
+    color("pink")cube([towerHeight, towerWidth+2*wallThickness, wallThickness]) ;
     //left side
-    translate([0,0,0]) color("blue")cube([towerHeight, baffleThickness, wallThickness+trayEdgeHeight]) ;
-    translate([-15,-baffleThickness+.001,0]) cube([25, wallThickness, wallThickness+trayEdgeHeight]) ;
+    translate([0,0,0]) color("darkgrey")cube([towerHeight, baffleThickness, wallThickness+trayEdgeHeight]) ;
+    translate([-15,-wallThickness+.001,0]) color("lightgrey")cube([25, wallThickness, wallThickness+trayEdgeHeight]) ;
     //right side
-    translate([0,towerWidth+1*wallThickness-.001,0]) color("green")cube([towerHeight, baffleThickness, wallThickness+trayEdgeHeight]) ;
-    translate([-15,towerWidth+2*wallThickness-.001,0]) color("green")cube([25, wallThickness, wallThickness+trayEdgeHeight]) ;
+    translate([0,towerWidth+1*wallThickness-.001,0]) color("darkgreen")cube([towerHeight, wallThickness, wallThickness+trayEdgeHeight]) ;
+    translate([-15,towerWidth+2*wallThickness-.001,0]) color("lightgreen")cube([25, wallThickness, wallThickness+trayEdgeHeight]) ;
     
     //end wall
     translate([towerHeight-baffleThickness,0,0]) cube([baffleThickness, towerWidth+2*baffleThickness, wallThickness+trayEdgeHeight]) ;
+    // Decoration - end wall
     translate([towerHeight-baffleThickness,trayEdgeHeight/2,trayEdgeHeight+wallThickness]) 
         rotate([0,90,0])cylinder(r=trayEdgeHeight/2, h =baffleThickness) ;
     translate([towerHeight-baffleThickness,towerWidth+2*baffleThickness-trayEdgeHeight/2,trayEdgeHeight+wallThickness]) 
@@ -202,12 +216,42 @@ module towerTray(towerHeight, towerWidth, towerDepth) {
         rotate([0,90,0])cylinder(r=trayEdgeHeight/2, h =baffleThickness) ;
     translate([towerHeight-baffleThickness,(3*towerWidth/4-0*baffleThickness),trayEdgeHeight+wallThickness]) 
         rotate([0,90,0])cylinder(r=trayEdgeHeight/2, h =baffleThickness) ;
+    // decoration right side     
+    translate([towerHeight-trayEdgeHeight/2,0, trayEdgeHeight+wallThickness]) 
+        rotate([0,90,90])cylinder(r=trayEdgeHeight/2, h =baffleThickness) ;     
+    translate([trayEdgeHeight/2,0, trayEdgeHeight+wallThickness]) 
+        rotate([0,90,90])cylinder(r=trayEdgeHeight/2, h =baffleThickness) ;    
+    translate([2*(trayEdgeHeight/2 + 2*xgap),0, trayEdgeHeight+wallThickness]) 
+        rotate([0,90,90])cylinder(r=trayEdgeHeight/2, h =baffleThickness) ;
+    translate([3*(trayEdgeHeight/2 + 2*xgap),0, trayEdgeHeight+wallThickness]) 
+        rotate([0,90,90])cylinder(r=trayEdgeHeight/2, h =baffleThickness) ;
+    translate([4*(trayEdgeHeight/2 + 2*xgap),0, trayEdgeHeight+wallThickness]) 
+        rotate([0,90,90])cylinder(r=trayEdgeHeight/2, h =baffleThickness) ;
+    translate([5*(trayEdgeHeight/2 + 2*xgap),0, trayEdgeHeight+wallThickness]) 
+        rotate([0,90,90])cylinder(r=trayEdgeHeight/2, h =baffleThickness) ;
+    translate([6*(trayEdgeHeight/2 + 2*xgap),0, trayEdgeHeight+wallThickness]) 
+        rotate([0,90,90])cylinder(r=trayEdgeHeight/2, h =baffleThickness) ;
+    // decoration left side     
+    translate([towerHeight-trayEdgeHeight/2,towerWidth+1*wallThickness, trayEdgeHeight+wallThickness]) 
+        rotate([0,90,90])cylinder(r=trayEdgeHeight/2, h =baffleThickness) ;     
+    translate([trayEdgeHeight/2,towerWidth+1*wallThickness, trayEdgeHeight+wallThickness]) 
+        rotate([0,90,90])cylinder(r=trayEdgeHeight/2, h =baffleThickness) ;    
+    translate([2*(trayEdgeHeight/2 + 2*xgap),towerWidth+1*wallThickness, trayEdgeHeight+wallThickness]) 
+        rotate([0,90,90])cylinder(r=trayEdgeHeight/2, h =baffleThickness) ;
+    translate([3*(trayEdgeHeight/2 + 2*xgap),towerWidth+1*wallThickness, trayEdgeHeight+wallThickness]) 
+        rotate([0,90,90])cylinder(r=trayEdgeHeight/2, h =baffleThickness) ;
+    translate([4*(trayEdgeHeight/2 + 2*xgap),towerWidth+1*wallThickness, trayEdgeHeight+wallThickness]) 
+        rotate([0,90,90])cylinder(r=trayEdgeHeight/2, h =baffleThickness) ;
+    translate([5*(trayEdgeHeight/2 + 2*xgap),towerWidth+1*wallThickness, trayEdgeHeight+wallThickness]) 
+        rotate([0,90,90])cylinder(r=trayEdgeHeight/2, h =baffleThickness) ;
+    translate([6*(trayEdgeHeight/2 + 2*xgap),towerWidth+1*wallThickness, trayEdgeHeight+wallThickness]) 
+        rotate([0,90,90])cylinder(r=trayEdgeHeight/2, h =baffleThickness) ;
 
 }
 
 
 module baffle(baffleWidth,baffleOutline,ShapePoints) {
-
+   
     cube([towerWidth-2*wallThickness, baffleDepth, baffleThickness]) ;
     translate([0,0,0]) cube([towerWidth-2*wallThickness, 2*baffleThickness, 2*baffleThickness]) ;
 }
@@ -217,26 +261,30 @@ module exitRamp(shapeLength=53, shapeWidth,baffleThickness) {
  
 }
 
-    if (printOption=="S") {
-        //translate([-towerDepth-8,0,0])
+if (printOption=="LS") {
         towerSideLeft(towerDepth,towerHeight, wallThickness) ;
 
         //towerSideRight(towerDepth,towerHeight, wallThickness) ;
 }
-else if (printOption == "F") {
-    translate([-towerWidth-2*wallThickness-3,0,0])
-    towerFront(towerWidth, towerHeight, wallThickness,diceOpening) ;
-    //towerBack(towerWidth, towerHeight, wallThickness, towerDepth) ;
+else if (printOption=="RS") {
+        
+        towerSideRight(towerDepth,towerHeight, wallThickness) ;
+}
+else if (printOption == "TF") {
+    towerFront(towerWidth, towerHeight, wallThickness,diceOpening) ;   
+}
+else if (printOption == "TB") {
+    towerBack(towerWidth, towerHeight, wallThickness, towerDepth) ;
 }
 else if (printOption == "B") {
-    color("brown") exitRamp(shapeWidth=towerWidth-2*wallThickness, baffleThickness=baffleThickness) ;
-    translate([towerWidth,0,0]) color("cyan") baffle(baffleWidth=towerWidth-2*wallThickness,baffleOutline=baffle1poly) ;
-    translate([towerWidth,baffleDepth+2,0]) color("white") baffle(baffleWidth=towerWidth-2*wallThickness,baffleOutline=baffle1poly) ;
-    translate([towerWidth,2*baffleDepth+4,0]) color("grey") baffle(baffleWidth=towerWidth-2*wallThickness,baffleOutline=baffle1poly) ;
+     color("grey") baffle(baffleWidth=towerWidth-2*wallThickness,baffleOutline=baffle1poly) ;
 }
-else if (printOption == "C") {
+else if (printOption == "E") {
+    color("brown") exitRamp(shapeWidth=towerWidth-2*wallThickness, baffleThickness=baffleThickness) ;
+ }
+ else if (printOption == "C") {
     
-    towerBase(towerDepth,towerWidth, wallThickness, "B") ; // B=Base for tower; 
+    towerBase(towerDepth,towerWidth, wallThickness, "B") ; // B=Base for tower;  
     
 }
 else if (printOption=="Q") {
