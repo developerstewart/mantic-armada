@@ -4,6 +4,7 @@
 Yet Another Dice Tower
 **********************
 Created by Stewart Stevens, August 2022
+Version 2.  Add clips to link the tower front nd back to the sides; Pretty the base and tray.
 
 This file contains all the code required to generate the 11 components that make up the tower
 
@@ -34,7 +35,7 @@ diceOpening = 26 ; // mm
 // T = Tray ; (print one)
 // Q = Base (print one)
 
-printOption = "TB" ; 
+printOption = "C" ; 
 
 baffle1poly = [ [0, 0],[baffleDepth, 0],[baffleDepth, 2*baffleThickness],
                 [baffleDepth-2*baffleThickness,baffleThickness],[0, baffleThickness]] ;
@@ -108,22 +109,43 @@ rotate([0,180,0])
 }
 }
 
-module towerBase(towerDepth,towerWidth, wallThickness, type="B"){
+module crenellations(wallLength, crennelationCount) {
+    uom = wallLength/(3*crennelationCount-1) ; 
+    for (crennelation = [0:3:12]) {
+        translate([crennelation*uom, 0, wallThickness-baffleThickness]) cube([2*uom,wallThickness,1.5*uom]) ;
+    }
+
+}
+module towerBase(towerDepth,towerWidth, wallThickness, type="Q"){
     cornerSize=4.00 ; //mm
-    if (type=="B") {
+    if (type=="Q") {
         cube([towerDepth+4*wallThickness, towerWidth+2*wallThickness, wallThickness]) ;
+        translate([0,0,wallThickness-0.05])rotate([0, 0, 0])
+            crenellations(wallLength=towerDepth+4*wallThickness, crennelationCount=5) ;
+        translate([towerDepth+4*wallThickness,0,wallThickness-0.05])rotate([0, 0, 90])
+            crenellations(wallLength=towerDepth+2*wallThickness, crennelationCount=5) ;
+        translate([0,towerWidth+1*wallThickness,wallThickness-0.05])rotate([0, 0, 0])
+            crenellations(wallLength=towerDepth+4*wallThickness, crennelationCount=5) ;
     }
     else {
-        {
-            translate([0,0,-0.5*wallThickness])
-               cube([towerDepth+4*wallThickness, 3*wallThickness, wallThickness]) ;
-            translate([0,0,-0.5*wallThickness])
-               cube([3*wallThickness, towerWidth+2*wallThickness, wallThickness]) ;
-            translate([0,towerWidth-1*wallThickness,-0.5*wallThickness])
-               cube([towerDepth+4*wallThickness, 3*wallThickness, wallThickness]) ;
-            translate([towerDepth+1*wallThickness,0,-0.5*wallThickness])
-               cube([3*wallThickness, towerWidth+2*wallThickness, wallThickness]) ;
-        }
+        
+        translate([0,0,-0.5*wallThickness])
+            cube([towerDepth+4*wallThickness, 3*wallThickness, wallThickness]) ;
+        translate([0,0,-0.5*wallThickness])
+            cube([3*wallThickness, towerWidth+2*wallThickness, wallThickness]) ;
+        translate([0,towerWidth-1*wallThickness,-0.5*wallThickness])
+            cube([towerDepth+4*wallThickness, 3*wallThickness, wallThickness]) ;
+        translate([towerDepth+1*wallThickness,0,-0.5*wallThickness])
+            cube([3*wallThickness, towerWidth+2*wallThickness, wallThickness]) ;
+        translate([0,0,wallThickness-0.05])rotate([0, 0, 0])
+            crenellations(wallLength=towerDepth+4*wallThickness, crennelationCount=5) ;
+        translate([towerDepth+4*wallThickness,0,wallThickness-0.05])rotate([0, 0, 90])
+            crenellations(wallLength=towerDepth+2*wallThickness, crennelationCount=5) ;
+        translate([0,towerWidth+1*wallThickness,wallThickness-0.05])rotate([0, 0, 0])
+            crenellations(wallLength=towerDepth+4*wallThickness, crennelationCount=5) ;
+        translate([wallThickness,0,wallThickness-0.05])rotate([0, 0, 90])
+            crenellations(wallLength=towerDepth+2*wallThickness, crennelationCount=5) ;
+        
     }
     //Add Corners
     translate([0,towerWidth-cornerSize-wallThickness,0])
@@ -290,7 +312,7 @@ else if (printOption == "E") {
     
 }
 else if (printOption=="Q") {
-    towerBase(towerDepth,towerWidth, wallThickness, "B") ;
+    towerBase(towerDepth,towerWidth, wallThickness, "Q") ;
     
 }
 else if (printOption == "T") {
