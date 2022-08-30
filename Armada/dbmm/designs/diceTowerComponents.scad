@@ -38,7 +38,7 @@ diceOpening = 26 ; // mm
 // T = Tray ; (print one)
 // Q = Base (print one)
 
-printOption = "TF" ; 
+printOption = "Q" ; 
 
 baffle1poly = [ [0, 0],[baffleDepth, 0],[baffleDepth, 2*baffleThickness],
                 [baffleDepth-2*baffleThickness,baffleThickness],[0, baffleThickness]] ;
@@ -155,8 +155,8 @@ module towerBase(towerDepth,towerWidth, wallThickness, type="Q"){
     if (type=="Q") {
         cube([towerDepth+4*wallThickness, towerWidth+2*wallThickness, wallThickness]) ;
 
-        translate([towerDepth+3*wallThickness-0.5,0,wallThickness-0.05])rotate([90, 0, 90])
-            color("blue")crenellations(wallLength=towerDepth+2*wallThickness, crennelationCount=5, gap=5.375) ;
+        //translate([towerDepth+3*wallThickness-0.5,0,wallThickness-0.05])rotate([90, 0, 90])
+        //      color("pink")crenellations(wallLength=towerDepth+2*wallThickness, crennelationCount=5, gap=5.375) ;
 
     }
     else {
@@ -219,7 +219,13 @@ module towerBase(towerDepth,towerWidth, wallThickness, type="Q"){
 
         translate([0,0,wallThickness-0.05])rotate([90, 0, 90])
             color("blue")crenellations(wallLength=towerDepth+2*wallThickness, crennelationCount=5,gap=5.375) ;
-            
+    }        
+    
+    else {
+        translate([0,0,wallThickness-0.05])rotate([90, 0, 90])
+            color("blue") brick(brickWidth, brickHeight, baffleThickness) ;
+        translate([0,towerWidth-5-wallThickness,wallThickness-0.05])rotate([90, 0, 90])
+            color("blue") brick(brickWidth, brickHeight, baffleThickness) ;
     }                
 }
 
