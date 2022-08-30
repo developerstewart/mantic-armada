@@ -38,7 +38,7 @@ diceOpening = 26 ; // mm
 // T = Tray ; (print one)
 // Q = Base (print one)
 
-printOption = "Q" ; 
+printOption = "T" ; 
 
 baffle1poly = [ [0, 0],[baffleDepth, 0],[baffleDepth, 2*baffleThickness],
                 [baffleDepth-2*baffleThickness,baffleThickness],[0, baffleThickness]] ;
@@ -72,41 +72,56 @@ module towerFront(towerWidth, towerHeight, wallThickness,diceOpening) {
 
 difference() {
     union() {cube([towerWidth+2*wallThickness,towerHeight, wallThickness]) ;
+        translate([0,wallThickness+.5,0]) 
+            cube([wallThickness, towerHeight-wallThickness-0.5, 3*wallThickness]) ;
+        translate([2*wallThickness,3*wallThickness+.5,0]) 
+            cube([wallThickness, 20, 3*wallThickness]) ;
+        color("red")translate([2*wallThickness,towerHeight-45-3*wallThickness-.5,0]) 
+            cube([wallThickness, 35, 3*wallThickness]) ;
+        translate([2*wallThickness,towerHeight/2-27-.5,0]) 
+            cube([wallThickness, 20, 3*wallThickness]) ;
+        translate([towerWidth+1*wallThickness,wallThickness+.5,0]) 
+            cube([wallThickness, towerHeight-wallThickness-0.5, 3*wallThickness]) ;
+        translate([towerWidth-1*wallThickness,3*wallThickness+.5,0]) 
+            cube([wallThickness, 20, 3*wallThickness]) ;
+        translate([towerWidth-1*wallThickness,towerHeight-45-3*wallThickness-.5,0]) 
+            cube([wallThickness, 35, 3*wallThickness]) ;
+        translate([towerWidth-1*wallThickness,towerHeight/2-27-.5,0]) 
+            color("blue")cube([wallThickness, 20, 3*wallThickness]) ;
     }
     translate([5+1*wallThickness,-.01,-.01])cube([towerWidth-2*5, diceOpening+.02, wallThickness+.02]) ;
-    translate([-.5,-.5,-.5]) cube([wallThickness+.6,wallThickness+.6,wallThickness+.6]) ;
-    translate([towerWidth+1*wallThickness-.5,-.5,-.5]) cube([wallThickness+.6,wallThickness+.6,wallThickness+.6]) ;
+    translate([-.5,-.5,-.5]) cube([wallThickness+.6,wallThickness+.6+brickHeight,wallThickness+.6+brickHeight]) ;
+    translate([towerWidth+1*wallThickness-.5,-.5,-.5]) cube([wallThickness+.6,wallThickness+.6+brickHeight,wallThickness+.6+brickHeight]) ;
     } 
-    translate([0,wallThickness+.5,0]) cube([wallThickness, towerHeight-wallThickness-0.5, 3*wallThickness]) ;
-    translate([2*wallThickness,3*wallThickness+.5,0]) cube([wallThickness, 20, 3*wallThickness]) ;
-    color("red")translate([2*wallThickness,towerHeight-25-3*wallThickness-.5,0]) cube([wallThickness, 15, 3*wallThickness]) ;
-    translate([2*wallThickness,towerHeight/2-15-.5,0]) cube([wallThickness, 20, 3*wallThickness]) ;
-    
-    translate([towerWidth+1*wallThickness,wallThickness+.5,0]) cube([wallThickness, towerHeight-wallThickness-0.5, 3*wallThickness]) ;
-    translate([towerWidth-1*wallThickness,3*wallThickness+.5,0]) cube([wallThickness, 20, 3*wallThickness]) ;
-    translate([towerWidth-1*wallThickness,towerHeight-25-3*wallThickness-.5,0]) cube([wallThickness, 15, 3*wallThickness]) ;
-    translate([towerWidth-1*wallThickness,towerHeight/2-15-.5,0]) cube([wallThickness, 20, 3*wallThickness]) ;
 
 }
 
 module towerBack(towerWidth, towerHeight, wallThickness, towerDepth) {
     difference() {
-        cube([towerWidth+2*wallThickness,towerHeight, wallThickness]) ;
-    
-        translate([-.5,-.5,-.5]) cube([wallThickness+.6,wallThickness+.6,wallThickness+.6]) ;
-        translate([towerWidth+1*wallThickness-.5,-.5,-.5]) cube([wallThickness+.6,wallThickness+.6,wallThickness+.6]) ;
+        union () {
+            cube([towerWidth+2*wallThickness,towerHeight, wallThickness]) ;
+
+            translate([0,wallThickness+.5,0]) 
+                cube([wallThickness, towerHeight-wallThickness-0.5, 3*wallThickness]) ;
+           translate([2*wallThickness,3*wallThickness+.5,0]) 
+                color("red")cube([wallThickness, 15, 3*wallThickness]) ;
+            translate([2*wallThickness,towerHeight-20-3*wallThickness-.5,0])
+                color("cyan")cube([wallThickness, 20, 3*wallThickness]) ;
+            translate([2*wallThickness,towerHeight/2-25-.5,0]) 
+                color("blue")cube([wallThickness, 35, 3*wallThickness]) ;
+
+            translate([towerWidth+1*wallThickness,wallThickness+.5,0]) 
+                cube([wallThickness, towerHeight-wallThickness-0.5, 3*wallThickness]) ;
+            translate([towerWidth-1*wallThickness,3*wallThickness+.5,0]) 
+                color("red") cube([wallThickness, 15, 3*wallThickness]) ;
+            translate([towerWidth-1*wallThickness,towerHeight-20-3*wallThickness-.5,0]) 
+                color("cyan") cube([wallThickness, 20, 3*wallThickness]) ;
+            translate([towerWidth-1*wallThickness,towerHeight/2-25-.5,0]) 
+                color("blue")cube([wallThickness, 35, 3*wallThickness]) ;
+        }
+        translate([-.5,-.5,-.5]) cube([wallThickness+.6,wallThickness+.6+brickHeight,wallThickness+.6+brickHeight]) ;
+        translate([towerWidth+1*wallThickness-.5,-.5,-.5]) cube([wallThickness+.6,wallThickness+.6+brickHeight,wallThickness+.6+brickHeight]) ;
     }
-
-    translate([0,wallThickness+.5,0]) cube([wallThickness, towerHeight-wallThickness-0.5, 3*wallThickness]) ;
-    translate([2*wallThickness,3*wallThickness+.5,0]) cube([wallThickness, 20, 3*wallThickness]) ;
-    translate([2*wallThickness,towerHeight-20-3*wallThickness-.5,0]) cube([wallThickness, 20, 3*wallThickness]) ;
-    translate([2*wallThickness,towerHeight/2-10-.5,0]) cube([wallThickness, 20, 3*wallThickness]) ;
-
-    
-    translate([towerWidth+1*wallThickness,wallThickness+.5,0]) cube([wallThickness, towerHeight-wallThickness-0.5, 3*wallThickness]) ;
-    translate([towerWidth-1*wallThickness,3*wallThickness+.5,0]) cube([wallThickness, 20, 3*wallThickness]) ;
-    translate([towerWidth-1*wallThickness,towerHeight-20-3*wallThickness-.5,0]) cube([wallThickness, 20, 3*wallThickness]) ;
-    translate([towerWidth-1*wallThickness,towerHeight/2-10-.5,0]) cube([wallThickness, 20, 3*wallThickness]) ;
 }
 
 
@@ -264,19 +279,30 @@ module towerTray(towerHeight, towerWidth, towerDepth) {
     //floor
     color("pink")cube([towerHeight, towerWidth+2*wallThickness, wallThickness]) ;
     //left side
-    translate([0,0,0]) color("darkgrey")cube([towerHeight, baffleThickness, wallThickness+trayEdgeHeight]) ;
-    translate([-15,-wallThickness+.001,0]) color("lightgrey")cube([25, wallThickness, wallThickness+trayEdgeHeight]) ;
+    translate([0,0,0]) color("darkgrey")
+        cube([towerHeight, baffleThickness, wallThickness+trayEdgeHeight]) ;
+    translate([-15,-wallThickness+.001,0]) color("lightgrey")
+        cube([25, wallThickness, wallThickness+trayEdgeHeight]) ;
     translate([0,wallThickness,wallThickness+trayEdgeHeight-2])rotate([90,0,0])
-        color("darkgrey") crenellations(wallLength=towerHeight+2*wallThickness, crennelationCount=7,gap=8.417) ;
-    //right side
-    translate([0,towerWidth+1*wallThickness-.001,0]) color("darkgreen")cube([towerHeight, wallThickness, wallThickness+trayEdgeHeight]) ;
-    translate([-15,towerWidth+2*wallThickness-.001,0]) color("lightgreen")cube([25, wallThickness, wallThickness+trayEdgeHeight]) ;
+        color("darkgrey") crenellations(wallLength=towerHeight+2*wallThickness, crennelationCount=7,gap=7.417) ;
+    translate([0,1,wallThickness+trayEdgeHeight-2])rotate([90,0,0])
+        color("darkgrey") crenellations(wallLength=towerHeight+2*wallThickness, crennelationCount=7,gap=7.417) ;
+        //right side
+    translate([0,towerWidth+1*wallThickness-.001,0]) color("darkgreen")
+        cube([towerHeight, wallThickness, wallThickness+trayEdgeHeight]) ;
+    translate([-15,towerWidth+2*wallThickness-.001,0]) color("lightgreen")
+        cube([25, wallThickness, wallThickness+trayEdgeHeight]) ;
     translate([0,towerWidth+2*wallThickness-.001,wallThickness+trayEdgeHeight-2])rotate([90,0,0])
-        color("darkgreen") crenellations(wallLength=towerHeight+2*wallThickness, crennelationCount=7,gap=8.417) ;
+        color("darkgreen") crenellations(wallLength=towerHeight+2*wallThickness, crennelationCount=7,gap=7.417) ;
+    translate([0,towerWidth+2*wallThickness+1,wallThickness+trayEdgeHeight-2])rotate([90,0,0])
+        color("lightgreen") crenellations(wallLength=towerHeight+2*wallThickness, crennelationCount=7,gap=7.417) ;
     
     //end wall
-    translate([towerHeight-baffleThickness,0,0]) color("lightblue")cube([baffleThickness, towerWidth+2*baffleThickness, wallThickness+trayEdgeHeight]) ;
-    translate([towerHeight-baffleThickness-1,0,wallThickness+trayEdgeHeight-2])rotate([90,0,90])
+    translate([towerHeight-baffleThickness,0,0]) color("lightblue")
+        cube([baffleThickness, towerWidth+2*baffleThickness, wallThickness+trayEdgeHeight]) ;
+    translate([towerHeight-baffleThickness-0.5,0,wallThickness+trayEdgeHeight-2]) rotate([90,0,90])
+        color("lightblue")crenellations(wallLength=towerWidth+2*wallThickness, crennelationCount=5,gap=5.3125) ;
+    translate([towerHeight-1,0,wallThickness+trayEdgeHeight-2]) rotate([90,0,90])
         color("lightblue")crenellations(wallLength=towerWidth+2*wallThickness, crennelationCount=5,gap=5.3125) ;
 
 }
@@ -295,8 +321,6 @@ module exitRamp(shapeLength=53, shapeWidth,baffleThickness) {
 
 if (printOption=="LS") {
         towerSideLeft(towerDepth,towerHeight, wallThickness) ;
-
-        //towerSideRight(towerDepth,towerHeight, wallThickness) ;
 }
 else if (printOption=="RS") {
         
