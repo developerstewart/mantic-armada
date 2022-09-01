@@ -51,7 +51,43 @@ baseClippoly = [ [0, 0],[towerDepth-2*wallThickness, 0],[towerDepth-2*wallThickn
 module genShape(shapeWidth,ShapeOutline) {
         linear_extrude(shapeWidth) polygon(points=ShapeOutline ) ;
 }
-// Simple cube to generate the tower, coping and try decorations
+
+// Module to define the corners 'clips' used to locate the tower walls to the base and coping
+//
+module cornerClip(shapeWidth) {
+
+   //cornerClipPoints
+    x0=0 ; x1=wallThickness-0.05; x2=2*wallThickness-0.05 ; x3= 3*wallThickness; x4=x3+clipHeightAboveWall ;
+    y0=0 ; y1=x2 ; y2=x4-x2;y3=x4-x1; y4=x4 ;
+    cornerClipPoints = [[x0,y0],[x1,y0],[x2,y0],[x3,y0],[x2,y2],[x4,y2],[x4,y1],[x3,y1],[x0,y4],[x4,y4],[x4,y3],[x1,y3]] ;
+    //                     0       1       2       3       4       5       6       7       8       9       10      11
+
+    shape1 = [[x2,y0],[x2,y2],[x4,y2],[x4,y1],[x3,y1],[x3,y0]];
+    shape2 = [[x0,y0],[x0,y4],[x4,y4],[x4,y3],[x1,y3],[x1,y0]] ;
+    shape3 = [[x0,y0],[x0,y4],[x4,y4],[x4,y1],[x3,y1],[x3,y0]] ;
+
+    union() {
+        genShape(shapeWidth=shapeWidth,ShapeOutline=shape1) ;
+        genShape(shapeWidth=shapeWidth,ShapeOutline=shape2) ;
+        genShape(shapeWidth=shapeWidth-clipHeightAboveWall,ShapeOutline=shape3) ;
+    }
+}
+
+
+// Module to define the 'clips' fitted to the tower sides to hold the die baffles
+//
+module baffleClip(clipWidth, rotateAngle) {
+    // Added to the sidd walls to 'hold the baffles'
+    rotate([0,0,-rotateAngle])   
+    union() {translate([0,0,0])cube([clipWidth,3*baffleThickness,wallThickness]) ;
+    translate([0,0,0])color("red")cube([baffleThickness,baffleThickness,wallThickness+clipHeightAboveWall]) ;
+    translate([0,0,0])cube([clipWidth,baffleThickness,wallThickness+clipHeightAboveWall ]) ;
+    translate([0,2*baffleThickness,0])cube([clipWidth,baffleThickness,wallThickness+clipHeightAboveWall ]) ;
+    }
+}
+
+// Simple cube to generate the tower, coping and tray decorations
+//
 module brick(brickWidth, brickHeight, brickDepth) {
 
     cube([brickWidth, brickHeight, brickDepth ]) ;
@@ -188,11 +224,12 @@ module towerSideRight(towerDepth, towerHeight, wallThickness) {
 }
 
 //
-// Generates the Base of the Tower (Print code Q)
+// Generates the Base of the Tower (Print code Q) or tope of the tower (Print Code C)
 //
 module towerBase(towerDepth,towerWidth, wallThickness, type="Q"){
     cornerSize=4.00 ; //mm
     if (type=="Q") {
+        //Ground level for the tower
         cube([towerDepth+4*wallThickness, towerWidth+2*wallThickness, wallThickness]) ;
 
         //translate([towerDepth+3*wallThickness-0.5,0,wallThickness-0.05])rotate([90, 0, 90])
@@ -200,7 +237,7 @@ module towerBase(towerDepth,towerWidth, wallThickness, type="Q"){
 
     }
     else {
-        
+        // Top of the tower
         translate([0,0,-0.5*wallThickness])
             cube([towerDepth+4*wallThickness, 3*wallThickness, wallThickness]) ;
          
@@ -214,7 +251,7 @@ module towerBase(towerDepth,towerWidth, wallThickness, type="Q"){
             cube([3*wallThickness, towerWidth+2*wallThickness, wallThickness]) ;
         
     }
-    //Add Corners
+    //Add Cornerclips
     translate([0,towerWidth-cornerSize-wallThickness,0])
         color("darkgrey") cornerClip(shapeWidth=cornerSize) ;
     translate([towerDepth-cornerSize+wallThickness,towerWidth+cornerSize,0]) rotate([0,0,-90])
@@ -224,7 +261,7 @@ module towerBase(towerDepth,towerWidth, wallThickness, type="Q"){
     translate([towerDepth+4*wallThickness, cornerSize+3*wallThickness,0]) rotate([0,0,-180])
         color("yellow") cornerClip(shapeWidth=cornerSize) ;
 
-    //Add centres 
+    //Add 'centres'
     //right wall   
     translate([(towerDepth-10*wallThickness-baffleDepth)/2,2.1*wallThickness,0]) 
         color("orange")genShape(shapeWidth=4,ShapeOutline=baseClippoly) ;
@@ -240,7 +277,7 @@ module towerBase(towerDepth,towerWidth, wallThickness, type="Q"){
         color("palegreen")genShape(shapeWidth=4,ShapeOutline=baseClippoly) ;
     translate([0,towerWidth+2*wallThickness,wallThickness-0.05])rotate([90, 0, 0])
         color("palegreen")    crenellations(wallLength=towerDepth+4*wallThickness, crennelationCount=5,gap=6.375) ;
-//backwall
+    //backwall
     translate([towerDepth-3.1*wallThickness+10, (towerDepth-13.5*wallThickness-baffleDepth)/2,0]) 
        rotate([0,0,90]) 
        color("cyan")genShape(shapeWidth=cornerSize,ShapeOutline=baseClippoly) ;
@@ -250,7 +287,15 @@ module towerBase(towerDepth,towerWidth, wallThickness, type="Q"){
     translate([towerDepth+2*wallThickness+baffleThickness,0,wallThickness-0.05])rotate([90, 0, 90])
          color("lightblue")   crenellations(wallLength=towerDepth+2*wallThickness, crennelationCount=5,gap=5.375) ;
     
-    if (type=="C") {  // add front wall
+    if (type=="Q") {
+        //  add decoration to the tower front corners
+        translate([0,0,wallThickness-0.05])rotate([90, 0, 90])
+            color("blue") brick(brickWidth, brickHeight, baffleThickness) ;
+        translate([0,towerWidth-5-wallThickness,wallThickness-0.05])rotate([90, 0, 90])
+            color("blue") brick(brickWidth, brickHeight, baffleThickness) ;
+    }       
+    
+    else   {  // add tower top front 
         translate([3.1*wallThickness, (towerDepth-13.5*wallThickness-baffleDepth)/2,0]) rotate([0,0,90]) 
             color("cyan")genShape(shapeWidth=cornerSize,ShapeOutline=baseClippoly) ;
 
@@ -259,46 +304,13 @@ module towerBase(towerDepth,towerWidth, wallThickness, type="Q"){
 
         translate([0,0,wallThickness-0.05])rotate([90, 0, 90])
             color("blue")crenellations(wallLength=towerDepth+2*wallThickness, crennelationCount=5,gap=5.375) ;
-    }        
-    
-    else {
-        translate([0,0,wallThickness-0.05])rotate([90, 0, 90])
-            color("blue") brick(brickWidth, brickHeight, baffleThickness) ;
-        translate([0,towerWidth-5-wallThickness,wallThickness-0.05])rotate([90, 0, 90])
-            color("blue") brick(brickWidth, brickHeight, baffleThickness) ;
     }                
 }
 
-module cornerClip(shapeWidth) {
 
-   //cornerClipPoints
-    x0=0 ; x1=wallThickness-0.05; x2=2*wallThickness-0.05 ; x3= 3*wallThickness; x4=x3+clipHeightAboveWall ;
-    y0=0 ; y1=x2 ; y2=x4-x2;y3=x4-x1; y4=x4 ;
-    cornerClipPoints = [[x0,y0],[x1,y0],[x2,y0],[x3,y0],[x2,y2],[x4,y2],[x4,y1],[x3,y1],[x0,y4],[x4,y4],[x4,y3],[x1,y3]] ;
-    //                     0       1       2       3       4       5       6       7       8       9       10      11
-
-    shape1 = [[x2,y0],[x2,y2],[x4,y2],[x4,y1],[x3,y1],[x3,y0]];
-    shape2 = [[x0,y0],[x0,y4],[x4,y4],[x4,y3],[x1,y3],[x1,y0]] ;
-    shape3 = [[x0,y0],[x0,y4],[x4,y4],[x4,y1],[x3,y1],[x3,y0]] ;
-
-    union() {
-        genShape(shapeWidth=shapeWidth,ShapeOutline=shape1) ;
-        genShape(shapeWidth=shapeWidth,ShapeOutline=shape2) ;
-        genShape(shapeWidth=shapeWidth-clipHeightAboveWall,ShapeOutline=shape3) ;
-    }
-}
-
-
-module baffleClip(clipWidth, rotateAngle) {
-    // Added to the sidd walls to 'hold the baffles'
-    rotate([0,0,-rotateAngle])   
-    union() {translate([0,0,0])cube([clipWidth,3*baffleThickness,wallThickness]) ;
-    translate([0,0,0])color("red")cube([baffleThickness,baffleThickness,wallThickness+clipHeightAboveWall]) ;
-    translate([0,0,0])cube([clipWidth,baffleThickness,wallThickness+clipHeightAboveWall ]) ;
-    translate([0,2*baffleThickness,0])cube([clipWidth,baffleThickness,wallThickness+clipHeightAboveWall ]) ;
-    }
-}
-
+//
+// Generates the Tray used to catch the dice as they exit the tower (Print code T)
+//
 module towerTray(towerHeight, towerWidth, towerDepth) {
     
     //floor
@@ -332,18 +344,26 @@ module towerTray(towerHeight, towerWidth, towerDepth) {
 
 }
 
-
+//
+// Generates the baffle held inside the tower to deflect the dice (Print code B)
+//
 module baffle(baffleWidth,baffleOutline,ShapePoints) {
    
     cube([towerWidth-2*wallThickness, baffleDepth, baffleThickness]) ;
     translate([0,0,0]) cube([towerWidth-2*wallThickness, 2*baffleThickness, 2*baffleThickness]) ;
 }
 
+//
+// Generates the baffle held inside the tower to deflect the dice out of the tower front (Print code E)
+//
 module exitRamp(shapeLength=53, shapeWidth,baffleThickness) {
     cube([shapeLength, shapeWidth, baffleThickness]) ; //Original value of 60 was too long to fit
  
 }
 
+// ******************************************************************************
+// Generate the tower component as specified by printOption
+//
 if (printOption=="LS") {
         towerSideLeft(towerDepth,towerHeight, wallThickness) ;
 }
