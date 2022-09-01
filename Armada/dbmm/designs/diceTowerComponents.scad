@@ -4,7 +4,7 @@
 Yet Another Dice Tower
 **********************
 Created by Stewart Stevens, August 2022
-Version 2.  Add clips to link the tower front nd back to the sides; Pretty the base and tray.
+Version 2.  Add clips to link the tower front and back to the sides; Pretty the base, coping and tray.
 
 This file contains all the code required to generate the 11 components that make up the tower
 
@@ -28,9 +28,11 @@ baffle1BelowTop = 5 ;
 
 brickWidth = 10.5 ;brickDepth = wallThickness; brickHeight=7;
 
-diceOpening = 26 ; // mm
-
-// LS, RS= Left or Right Side;  (print one of each)
+diceOpening = 26 ; // mm on the front of the towewr onto the tray
+//
+printOption = "Q" ; // Supported values for Print OPtion.
+// **********************************
+// LS, RS = Left or Right Side;  (print one of each)
 // TF, TB = Tower Front or Back; (print one of each)
 // B = Baffle;  (Print 3 of these)
 // E = 'Exit' slope; (print one )
@@ -38,8 +40,7 @@ diceOpening = 26 ; // mm
 // T = Tray ; (print one)
 // Q = Base (print one)
 
-printOption = "T" ; 
-
+// polygons used to define some of the basic shapes and used by calls to the genShape module
 baffle1poly = [ [0, 0],[baffleDepth, 0],[baffleDepth, 2*baffleThickness],
                 [baffleDepth-2*baffleThickness,baffleThickness],[0, baffleThickness]] ;
 
@@ -50,13 +51,14 @@ baseClippoly = [ [0, 0],[towerDepth-2*wallThickness, 0],[towerDepth-2*wallThickn
 module genShape(shapeWidth,ShapeOutline) {
         linear_extrude(shapeWidth) polygon(points=ShapeOutline ) ;
 }
-
+// Simple cube to generate the tower, coping and try decorations
 module brick(brickWidth, brickHeight, brickDepth) {
 
     cube([brickWidth, brickHeight, brickDepth ]) ;
 
 }
 
+// generate a number of battlements with a fixed gap to meet the length of battlements required
 module crenellations(wallLength, crennelationCount, gap) {
     
     //gap = 7.75 ; //(wallLength-(crennelationCount*brickWidth))/(crennelationCount-1) ;
@@ -68,8 +70,10 @@ module crenellations(wallLength, crennelationCount, gap) {
 
 }
 
-module towerFront(towerWidth, towerHeight, wallThickness,diceOpening) {
-
+// Generates the Front of the Tower (Print code TF)
+//
+module towerFront(towerWidth, towerHeight, wallThickness, diceOpening) {
+// ***************
 difference() {
     union() {cube([towerWidth+2*wallThickness,towerHeight, wallThickness]) ;
         translate([0,wallThickness+.5,0]) 
@@ -92,11 +96,16 @@ difference() {
     translate([5+1*wallThickness,-.01,-.01])cube([towerWidth-2*5, diceOpening+.02, wallThickness+.02]) ;
     translate([-.5,-.5,-.5]) cube([wallThickness+.6,wallThickness+.6+brickHeight,wallThickness+.6+brickHeight]) ;
     translate([towerWidth+1*wallThickness-.5,-.5,-.5]) cube([wallThickness+.6,wallThickness+.6+brickHeight,wallThickness+.6+brickHeight]) ;
+    translate([-0.5,towerHeight-brickWidth-.5,-.5]) cube([wallThickness+.6,wallThickness+.6+brickWidth,wallThickness+.6+brickHeight]) ;
+    translate([towerWidth+1*wallThickness-.5,towerHeight-brickWidth-.5,-.5]) cube([wallThickness+.6,wallThickness+.6+brickWidth,wallThickness+.6+brickHeight]) ;
     } 
 
 }
 
+// Generates the Back of the Tower (Print code TB)
+//
 module towerBack(towerWidth, towerHeight, wallThickness, towerDepth) {
+// **************
     difference() {
         union () {
             cube([towerWidth+2*wallThickness,towerHeight, wallThickness]) ;
@@ -121,50 +130,66 @@ module towerBack(towerWidth, towerHeight, wallThickness, towerDepth) {
         }
         translate([-.5,-.5,-.5]) cube([wallThickness+.6,wallThickness+.6+brickHeight,wallThickness+.6+brickHeight]) ;
         translate([towerWidth+1*wallThickness-.5,-.5,-.5]) cube([wallThickness+.6,wallThickness+.6+brickHeight,wallThickness+.6+brickHeight]) ;
+        translate([-0.5,towerHeight-brickWidth-.5,-.5]) cube([wallThickness+.6,wallThickness+.6+brickWidth,wallThickness+.6+brickHeight]) ;
+        translate([towerWidth+1*wallThickness-.5,towerHeight-brickWidth-.5,-.5]) cube([wallThickness+.6,wallThickness+.6+brickWidth,wallThickness+.6+brickHeight]) ;
     }
 }
+//
+// Module to define and place the holders for the 4 baffles
+//
+module baffleClips(towerDepth, towerHeight, wallThickness) {
+// ****************
 
-
-module towerSide(towerDepth, towerHeight, wallThickness) {
-            union() {
-            //baffle clips
-            translate([baffleThickness,towerHeight-2*baffle1BelowTop,0])
-                color("green") baffleClip(clipWidth=35, rotateAngle=30) ;
-            translate([baffleThickness,towerHeight-50-baffle1BelowTop-3*baffleThickness/cos(60),0])
-               color("red") baffleClip(clipWidth=35, rotateAngle=30) ;
-            
-            translate([towerDepth-baffleThickness-cos(30)*35,65,0])
-                color("grey") baffleClip(clipWidth=35, rotateAngle=-30) ;
-            translate([towerDepth-3*baffleThickness-50*cos(30),50*cos(-60)-20,0])
-                color("brown") baffleClip(clipWidth=50, rotateAngle=-25) ;
+        union() {
+        //baffle clips
+        translate([baffleThickness,towerHeight-2*baffle1BelowTop,0])
+            color("green") baffleClip(clipWidth=35, rotateAngle=30) ;
+        translate([baffleThickness,towerHeight-50-baffle1BelowTop-3*baffleThickness/cos(60),0])
+            color("red") baffleClip(clipWidth=35, rotateAngle=30) ;
+        translate([towerDepth-baffleThickness-cos(30)*35,65,0])
+            color("grey") baffleClip(clipWidth=35, rotateAngle=-30) ;
+        translate([towerDepth-3*baffleThickness-50*cos(30),50*cos(-60)-20,0])
+            color("brown") baffleClip(clipWidth=50, rotateAngle=-25) ;
         }
 
 }
+
+//
+// Generates the Left side of the Tower (Print code TL)
+//
 module towerSideLeft(towerDepth, towerHeight, wallThickness) {
+//     *************    
    
         union() {
             //side plate
             cube([towerDepth, towerHeight, wallThickness]) ;
             //baffle clips
-            towerSide(towerDepth, towerHeight, wallThickness) ;
+            baffleClips(towerDepth, towerHeight, wallThickness) ;
         }
                 
 }
 
+//
+// Generates the Left side of the Tower (Print code TL)
+//
 module towerSideRight(towerDepth, towerHeight, wallThickness) {
-rotate([0,180,0])
-    translate([0,0,12])
+//     **************    
+
+    rotate([0,180,0]) translate([0,0,12])
         difference() {
             union() {
             //side plate
             translate([0,0,4*baffleThickness-.001]) color("purple") cube([towerDepth, towerHeight, wallThickness]) ;
             //baffle clips
-            towerSide(towerDepth, towerHeight, wallThickness) ;
+            baffleClips(towerDepth, towerHeight, wallThickness) ;
         }
         translate([-.0010,-.0010,-.0010]) color("white") cube([towerDepth+.002, towerHeight+.002, wallThickness+.002]) ;
 }
 }
 
+//
+// Generates the Base of the Tower (Print code Q)
+//
 module towerBase(towerDepth,towerWidth, wallThickness, type="Q"){
     cornerSize=4.00 ; //mm
     if (type=="Q") {
