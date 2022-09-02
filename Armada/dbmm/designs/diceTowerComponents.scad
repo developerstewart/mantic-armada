@@ -30,7 +30,7 @@ brickWidth = 10.5 ;brickDepth = wallThickness; brickHeight=7;
 
 diceOpening = 26 ; // mm on the front of the towewr onto the tray
 //
-printOption = "Q" ; // Supported values for Print OPtion.
+printOption = "T" ; // Supported values for Print OPtion.
 // **********************************
 // LS, RS = Left or Right Side;  (print one of each)
 // TF, TB = Tower Front or Back; (print one of each)
