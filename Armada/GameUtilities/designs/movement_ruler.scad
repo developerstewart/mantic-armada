@@ -1,7 +1,7 @@
-measure_length = 5 ; // Inches
+measure_length = 8 ; // Inches
 measure_scale  = 25.4 ;  // mm
 l = measure_length*25.4 ; // mm
-w = 2*measure_scale/5 ; // 1" width
+w = 2*measure_scale/5 ; // mm
 x = measure_scale ;
 h = 0.1 * measure_scale  ; // ruler height
 
@@ -9,14 +9,15 @@ fl = 1.00 ; // 1mm 'fret' length
 
 ruler = [[0,0], [l, 0], [l, w], [0, w]] ;
 
-color("black")linear_extrude( h) polygon(ruler) ;
+color("grey")linear_extrude( h) polygon(ruler) ;
 
-//linear_extrude(h+fl) polygon([[0,0],[0+fl,0],[0+fl,w],[0,w]]) ; //starting fret
-
-color("black")translate([-9.99,-(40-w)/2,0]) cube([10,40,h]) ;
-translate([-5,w/2,0])rotate([0,0,-90])color("brown")linear_extrude(h+fl) text(size=5, text="Movement", halign="center", valign="center") ;
-
-//translate([5,w/2,0])linear_extrude(h+fl) text(size=5, text="0", halign="center", valign="center", direction="ttb") ;
+difference() {
+    union() {
+        color("grey")translate([-9.99,-(40-w)/2,0]) cube([10,40,h]) ;
+        color("grey") translate([-9.99,w/2,0]) cylinder(h=h,r=5) ;
+    }
+translate([-5,w/2,h/2])rotate([0,0,-90])color("brown")linear_extrude(h+fl) text(size=5, text="Movement", halign="center", valign="center") ;
+}
 
 for(f= [measure_length:-1:1]) {  
     //build intermediate frets
@@ -25,7 +26,5 @@ for(f= [measure_length:-1:1]) {
     translate([f*x-4.0,w/2,0])rotate([0,0,-90])color("brown")linear_extrude(h+fl) text(size=5, text=str(f), halign="center", valign="center") ;
 
 }
-    //linear_extrude(h+fl) polygon([[l,0],[l-fl,0],[l-fl,w],[l,w]]) ; //ending fret
-    //translate([l-3,w/2,0])linear_extrude(h+fl) text(size=5, text=str(measure_length), halign="center", valign="center", direction="ttb") ;
 
 
