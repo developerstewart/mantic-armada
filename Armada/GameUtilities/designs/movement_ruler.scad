@@ -1,4 +1,4 @@
-measure_length = 8 ; // Inches
+measure_length = 5 ; // Inches
 measure_scale  = 25.4 ;  // mm
 l = measure_length*25.4 ; // mm
 w = 2*measure_scale/5 ; // 1" width
