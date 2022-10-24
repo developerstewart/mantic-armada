@@ -20,11 +20,11 @@ module drawRuler(measureL,rulerW,rulerT,barker,label,labelH,paces){
         if (thisLine < linesOnRuler) { // draw tick marks   
             translate([(0.5*thisLine*barker)-1.00, 0,0]) color("blue")
                 cube([1, 1.5, labelZ]) ;  // Line
-            translate([(0.5*thisLine*barker)-1.00, 8.5, 0]) color("blue")
+            translate([(0.5*thisLine*barker)-1.00, rulerW-1.5, 0]) color("blue")
                 cube([1, 1.5, labelZ]) ;  // Line
             if (barkers==10 && thisLine> 1) { // draw tick mark across with of ruler
                 translate([(0.5*thisLine*barker)-1.00, 0,0]) color("blue")
-                    cube([1, rulerWidth, labelZ]) ;}
+                    cube([1, rulerW, labelZ]) ;}
         }
         
         // Add ruler pace length label
@@ -49,13 +49,11 @@ miniatureScales = [2,6,10,12,15,20,25,28] ;
 miniatureElementWidths = [30, 40, 40, 40 , 40, 40, 60, 60] ;
 /* [Drop down box] */
 // Miniature scale
-miniSize = 25;  // [2:28]
+miniSize = 15;  // [2:28]
 // Number of 80 pace lengths on the ruler (2,4,5,6,8,9,10)
-barkers = 8 ; // [2:1:10]
+barkers = 4 ; // [2:1:10]
 
 /* [Slider] */
-//Ruler Width - usually 10mm or element width
-rulerWidth = 10 ; // [10:elementWidth]
 //Ruler thickness (ideally a multiple of layer height)
 rulerThickness = 2.24 ; // [2:4]
 
@@ -66,6 +64,9 @@ labelHeight = 0.64 ; // [0.4:2.0]
 arrayRef = search(miniSize, miniatureScales)  ;
 
 elementWidth = miniatureElementWidths[arrayRef[0]] ;
+/* [Slider] */
+//Ruler Width - usually 10mm or element width
+rulerWidth = elementWidth ; // [10:elementWidth]
 
 barker = elementWidth ;
 
