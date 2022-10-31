@@ -55,25 +55,26 @@ module drawRuler(measureL,rulerW,rulerT,barker,label,labelH,paces){
 miniatureScales = [2,6,10,12,15,20,25,28] ;
 miniatureElementWidths = [30, 40, 40, 40 , 40, 40, 60, 60] ;
 /* [Drop down box] */
-// Miniature scale
+// Parameter 1: Miniature scale
 miniSize = 15;  // [2:28]
-// Number of 80 pace lengths on the ruler (2,4,5,6,8,9,10)
-barkers = 6 ; // [2:1:10]
+// Parameter 2:Number of 80 pace lengths on the ruler (2,4,5,6,8,9,10)
+barkers = 5 ; // [2:1:10]
 
 /* [Slider] */
-//Ruler thickness (ideally a multiple of layer height)
+//Parameter 3: Ruler thickness (ideally a multiple of layer height)
 rulerThickness = 2.40 ; // [2:4]
 
-//Height of labels above ruler (ideally a multiple of layer height)
+//Parameter 4: Depth of labels below ruler top surface (ideally a multiple of layer height)
 labelHeight = 0.96 ; // [0.4:2.0]
+
+/* [Slider] */
+//Parameter 5: Ruler Width - usually 10mm or element width
+rulerWidth = 10.0 ; // [10:elementWidth]
 
 // Create ruler parameters from the above 5 values
 arrayRef = search(miniSize, miniatureScales)  ;
 
 elementWidth = miniatureElementWidths[arrayRef[0]] ;
-/* [Slider] */
-//Ruler Width - usually 10mm or element width
-rulerWidth = 10.0 ; // [10:elementWidth]
 
 barker = elementWidth ;
 
@@ -108,13 +109,13 @@ labels = [ ""
          ] ;
 
 
-drawRuler( measureL=measureLength
-         , rulerW  =rulerWidth
-         , rulerT  =rulerThickness
-         , barker  =barker
-         , label   =labels[barkers]
-         , labelH  =labelHeight
-         , paces   =rulers[barkers]
+drawRuler( measureL= measureLength
+         , rulerW  = rulerWidth
+         , rulerT  = rulerThickness
+         , barker  = barker
+         , label   = labels[barkers]
+         , labelH  = labelHeight
+         , paces   = rulers[barkers]
          ) 
          ; 
 // Enjoy
